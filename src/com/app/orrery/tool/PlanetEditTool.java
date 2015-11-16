@@ -38,8 +38,8 @@ public class PlanetEditTool extends AbstractTool implements EditableTool {
 		if (figure != null) {
 			if (figure instanceof PlanetFigure) {
 				PlanetFigure planet = (PlanetFigure) figure;
-				Rectangle textBounds = planet.getTextBounds();
-				if ((x > textBounds.x) && (x < textBounds.x + textBounds.width) && (y > textBounds.y) && (y < textBounds.y + textBounds.height)) {
+				Rectangle bounds = planet.getPlanetBounds();
+				if ((x > bounds.x) && (x < bounds.x + bounds.width) && (y > bounds.y) && (y < bounds.y + bounds.height)) {
 					fEditableFigure = new EditableFigure(planet, view());
 					fEditableFigure.beginEdit();
 				}

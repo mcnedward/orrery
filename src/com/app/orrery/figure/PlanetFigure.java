@@ -6,8 +6,15 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Vector;
+
+import com.app.orrery.handle.NorthEastHandle;
+import com.app.orrery.handle.NorthWestHandle;
+import com.app.orrery.handle.SouthEastHandle;
+import com.app.orrery.handle.SouthWestHandle;
 
 import CH.ifa.draw.figure.EllipseFigure;
+import CH.ifa.draw.framework.Handle;
 
 /**
  * @author Edward McNealy <edwardmcn64@gmail.com> - Oct 31, 2015
@@ -15,6 +22,8 @@ import CH.ifa.draw.figure.EllipseFigure;
  */
 public class PlanetFigure extends EllipseFigure {
 	private static final long serialVersionUID = -3146574478769258549L;
+
+	public static final int PLANET_SIZE = 120;
 
 	private String planetName;
 	private Font fFont;
@@ -38,11 +47,13 @@ public class PlanetFigure extends EllipseFigure {
 			fColor = Color.GREEN;
 		else
 			fColor = Color.RED;
-
 		drawPlanetText(g, r);
 
 		g.setColor(fColor);
 		g.fillOval(r.x, r.y, r.width, r.height);
+
+		g.setColor(Color.MAGENTA);
+		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	private void drawPlanetText(Graphics g, Rectangle planetBounds) {
@@ -65,16 +76,7 @@ public class PlanetFigure extends EllipseFigure {
 
 	@Override
 	public Rectangle displayBox() {
-		Rectangle bounds = getPlanetBounds();
-		if (metrics != null) {
-			int textHeight = 15 + metrics.getAscent();
-			bounds.setBounds(bounds.x, bounds.y, bounds.width, bounds.height + textHeight);
-		}
-		return bounds;
-	}
-
-	public void repaint() {
-		invalidate();
+		return getPlanetBounds();
 	}
 
 	public Rectangle getPlanetBounds() {
@@ -100,15 +102,34 @@ public class PlanetFigure extends EllipseFigure {
 			width = 50;
 		}
 		int height = 15;
+
 		int fx = (planet.x + (planet.width / 2)) - (width / 2);
 		int fy = planet.y + planet.height + 5;
 		return new Rectangle(fx, fy, width, height);
 	}
 
+	@Override
+	public Vector<Handle> handles() {
+		Vector<Handle> handles = new Vector<Handle>();
+		handles.add(new NorthEastHandle(this));
+		handles.add(new NorthWestHandle(this));
+		handles.add(new SouthEastHandle(this));
+		handles.add(new SouthWestHandle(this));
+		return handles;
+	}
+
+	public void repaint() {
+		invalidate();
+	}
+
+	public void setColor(Color color) {
+		fColor = color;
+	}
+
 	public String getPlanetName() {
 		return planetName;
 	}
-	
+
 	public void setPlanetName(String planetName) {
 		this.planetName = planetName;
 	}

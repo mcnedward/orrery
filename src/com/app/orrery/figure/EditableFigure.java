@@ -23,13 +23,13 @@ public class EditableFigure extends DecoratorFigure {
 	private FloatingTextField fTextField;
 	private TextHolder fTypingTarget;
 
-	private PlanetFigure fPlanetFigure;
+	private PlanetFigure fPlanet;
 	private DrawingView fView;
 	
 	public EditableFigure(Figure figure, DrawingView view) {
 		super(figure);
 		if (figure instanceof PlanetFigure)
-			fPlanetFigure = (PlanetFigure) figure;
+			fPlanet = (PlanetFigure) figure;
 		fView = view;
 	}
 
@@ -47,7 +47,7 @@ public class EditableFigure extends DecoratorFigure {
 		if (figure != fTypingTarget && fTypingTarget != null)
 			endEdit();
 		fTextField.createOverlay((JPanel) fView, new Font("Segoe UI", Font.PLAIN, 8));
-		fTextField.setBounds(fPlanetFigure.getTextBounds(), fPlanetFigure.getPlanetName());
+		fTextField.setBounds(fPlanet.getTextBounds(), fPlanet.getPlanetName());
 		fTypingTarget = figure;
 	}
 
@@ -56,8 +56,8 @@ public class EditableFigure extends DecoratorFigure {
 			fTypingTarget = null;
 			fTextField.endOverlay();
 			// Set the planet's name and tell the figure to redraw with the planet name
-			fPlanetFigure.setPlanetName(fTextField.getText());
-			fPlanetFigure.repaint();
+			fPlanet.setPlanetName(fTextField.getText());
+			fPlanet.repaint();
 			fView.checkDamage();
 		}
 	}

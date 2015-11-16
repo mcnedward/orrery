@@ -2,6 +2,7 @@ package com.app.orrery.tool;
 
 import java.awt.event.MouseEvent;
 
+import com.app.orrery.OrreryApp;
 import com.app.orrery.figure.EditableFigure;
 import com.app.orrery.figure.PlanetFigure;
 
@@ -41,6 +42,10 @@ public class PlanetTool extends CreationTool implements EditableTool {
 	@Override
 	public void mouseDown(MouseEvent e, int x, int y) {
 		super.mouseDown(e, x, y);
+		Figure createdFigure = createdFigure();
+		if (createdFigure != null && createdFigure instanceof PlanetFigure) {
+			OrreryApp.PLANETS.add((PlanetFigure) createdFigure);
+		}
 		if (fEditableFigure != null)
 			fEditableFigure.endEdit();
 	}
@@ -51,7 +56,7 @@ public class PlanetTool extends CreationTool implements EditableTool {
 			return (PlanetFigure) createdFigure;
 		return null;
 	}
-	
+
 	@Override
 	public void endEdit() {
 		if (fEditableFigure != null)

@@ -1,6 +1,8 @@
 package com.app.orrery;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -23,6 +25,8 @@ public class OrreryApp extends DrawApplication {
 
 	private PlanetTool planetTool;
 	
+	public static List<PlanetFigure> PLANETS;
+	
 	public static void main(String[] args) {
 		OrreryApp window = new OrreryApp();
 		window.open();
@@ -30,6 +34,7 @@ public class OrreryApp extends DrawApplication {
 
 	public OrreryApp() {
 		super("Orrery App");
+		PLANETS = new ArrayList<>();
 	}
 
 	@Override
@@ -40,7 +45,7 @@ public class OrreryApp extends DrawApplication {
 		palette.add(createToolButton(IMAGES + "ELLIPSE", "Planet Tool", planetTool));
 
 		Tool tool = new PlanetEditTool(view());
-		palette.add(createToolButton(IMAGES + "TEXT", "Planet Name Tool", tool));
+		palette.add(createToolButton(IMAGES + "TEXT", "Planet Name Tool - Click inside a Planet to rename", tool));
 
 		tool = new ClearTool(view());
 		palette.add(createToolButton(IMAGES + "ERASER", "Clear Tool", tool));
