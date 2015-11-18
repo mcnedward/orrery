@@ -19,12 +19,19 @@ public class PlanetTool extends CreationTool implements EditableTool {
 	private PlanetFigure fPlanetFigure;
 	private EditableFigure fEditableFigure;
 
-	/**
-	 * @param view
-	 * @param prototype
-	 */
 	public PlanetTool(DrawingView view, Figure prototype) {
 		super(view, prototype);
+	}
+
+	@Override
+	public void mouseDown(MouseEvent e, int x, int y) {
+		super.mouseDown(e, x, y);
+		Figure createdFigure = createdFigure();
+		if (createdFigure != null && createdFigure instanceof PlanetFigure) {
+			OrreryApp.PLANETS.add((PlanetFigure) createdFigure);
+		}
+		if (fEditableFigure != null)
+			fEditableFigure.endEdit();
 	}
 
 	@Override
@@ -37,17 +44,6 @@ public class PlanetTool extends CreationTool implements EditableTool {
 			}
 		}
 		super.mouseUp(e, x, y);
-	}
-
-	@Override
-	public void mouseDown(MouseEvent e, int x, int y) {
-		super.mouseDown(e, x, y);
-		Figure createdFigure = createdFigure();
-		if (createdFigure != null && createdFigure instanceof PlanetFigure) {
-			OrreryApp.PLANETS.add((PlanetFigure) createdFigure);
-		}
-		if (fEditableFigure != null)
-			fEditableFigure.endEdit();
 	}
 
 	private PlanetFigure getPlanetFigure() {

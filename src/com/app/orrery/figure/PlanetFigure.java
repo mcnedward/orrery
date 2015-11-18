@@ -8,10 +8,10 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Vector;
 
-import com.app.orrery.handle.NorthEastHandle;
-import com.app.orrery.handle.NorthWestHandle;
-import com.app.orrery.handle.SouthEastHandle;
-import com.app.orrery.handle.SouthWestHandle;
+import com.app.orrery.handle.planet.NorthEastHandle;
+import com.app.orrery.handle.planet.NorthWestHandle;
+import com.app.orrery.handle.planet.SouthEastHandle;
+import com.app.orrery.handle.planet.SouthWestHandle;
 
 import CH.ifa.draw.figure.EllipseFigure;
 import CH.ifa.draw.framework.Handle;
@@ -51,9 +51,6 @@ public class PlanetFigure extends EllipseFigure {
 
 		g.setColor(fColor);
 		g.fillOval(r.x, r.y, r.width, r.height);
-
-		g.setColor(Color.MAGENTA);
-		g.drawRect((int) r.getX(), (int) r.getY(), (int) r.getWidth(), (int) r.getHeight());
 	}
 
 	private void drawPlanetText(Graphics g, Rectangle planetBounds) {
@@ -77,6 +74,18 @@ public class PlanetFigure extends EllipseFigure {
 	@Override
 	public Rectangle displayBox() {
 		return getPlanetBounds();
+	}
+
+	@Override
+	public void basicDisplayBox(Point origin, Point corner) {
+		int dragX = corner.x, dragY = corner.y;
+		if (dragX < origin.x && dragX <= origin.x - PLANET_SIZE) {
+			corner.x = origin.x - PLANET_SIZE;
+		}
+		if (dragY < origin.y && dragY <= origin.y - PLANET_SIZE) {
+			corner.y = origin.y - PLANET_SIZE;
+		}
+		super.basicDisplayBox(origin, corner);
 	}
 
 	public Rectangle getPlanetBounds() {

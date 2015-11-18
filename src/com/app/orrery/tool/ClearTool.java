@@ -1,5 +1,7 @@
 package com.app.orrery.tool;
 
+import java.awt.Color;
+
 import CH.ifa.draw.framework.Drawing;
 import CH.ifa.draw.framework.DrawingView;
 import CH.ifa.draw.tool.AbstractTool;
@@ -16,7 +18,7 @@ public class ClearTool extends AbstractTool {
 	public ClearTool(DrawingView view) {
 		super(view);
 	}
-	
+
 	@Override
 	public void activate() {
 		clear();
@@ -28,6 +30,7 @@ public class ClearTool extends AbstractTool {
 			drawing.remove(drawing.figures().nextElement());
 		}
 		view().paintComponent(view().getGraphics());
+		view().setBackground(Color.LIGHT_GRAY);
 	}
 
 }

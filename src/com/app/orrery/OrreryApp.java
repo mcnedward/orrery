@@ -7,10 +7,13 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import com.app.orrery.figure.PlanetFigure;
+import com.app.orrery.figure.SatelliteFigure;
+import com.app.orrery.tool.AtmosphereTool;
 import com.app.orrery.tool.ClearTool;
 import com.app.orrery.tool.EditableTool;
 import com.app.orrery.tool.PlanetEditTool;
 import com.app.orrery.tool.PlanetTool;
+import com.app.orrery.tool.SatelliteTool;
 
 import CH.ifa.draw.application.DrawApplication;
 import CH.ifa.draw.framework.Tool;
@@ -43,10 +46,16 @@ public class OrreryApp extends DrawApplication {
 
 		planetTool = new PlanetTool(view(), new PlanetFigure());
 		palette.add(createToolButton(IMAGES + "ELLIPSE", "Planet Tool", planetTool));
+		
+		Tool tool = new AtmosphereTool(view());
+		palette.add(createToolButton(IMAGES + "BORDDEC", "Planet Atmosphere Tool", tool));
 
-		Tool tool = new PlanetEditTool(view());
+		tool = new PlanetEditTool(view());
 		palette.add(createToolButton(IMAGES + "TEXT", "Planet Name Tool - Click inside a Planet to rename", tool));
 
+		tool = new SatelliteTool(view(), new SatelliteFigure());
+		palette.add(createToolButton(IMAGES + "SAT", "Satellite Tool", tool));
+		
 		tool = new ClearTool(view());
 		palette.add(createToolButton(IMAGES + "ERASER", "Clear Tool", tool));
 	}

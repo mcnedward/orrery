@@ -1,4 +1,4 @@
-package com.app.orrery.handle;
+package com.app.orrery.handle.planet;
 
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -13,12 +13,12 @@ import CH.ifa.draw.locator.RelativeLocator;
  * @author Edward McNealy <edwardmcn64@gmail.com> - Nov 16, 2015
  *
  */
-public class NorthWestHandle extends LocatorHandle {
+public class SouthEastHandle extends LocatorHandle {
 
 	private PlanetFigure planetFigure;
 
-	public NorthWestHandle(PlanetFigure owner) {
-		super(owner, RelativeLocator.northWest());
+	public SouthEastHandle(PlanetFigure owner) {
+		super(owner, RelativeLocator.southEast());
 		planetFigure = owner;
 	}
 
@@ -26,19 +26,19 @@ public class NorthWestHandle extends LocatorHandle {
 	public void invokeStep(int x, int y, int anchorX, int anchorY, DrawingView view) {
 		Rectangle r = planetFigure.getPlanetBounds();
 
-		int lockX = r.x + r.width;
-		int lockY = r.y + r.height;
+		int lockX = r.x;
+		int lockY = r.y;
 
-		int width = lockX - x;
-		int height = lockY - y;
+		int width = x - lockX;
+		int height = y - lockY;
 		int size = Math.min(PlanetFigure.PLANET_SIZE, Math.max(width, height));
-
-		int p1x = Math.min(lockX, lockX - size);
-		int p1y = Math.min(lockY, lockY - size);
+		
+		int p1x = lockX;
+		int p1y = lockY;
 		Point p1 = new Point(p1x, p1y);
 
-		int p2x = lockX;
-		int p2y = lockY;
+		int p2x = Math.max(lockX, lockX + size);
+		int p2y = Math.max(lockY, lockY + size);
 		Point p2 = new Point(p2x, p2y);
 
 		owner().displayBox(p1, p2);
