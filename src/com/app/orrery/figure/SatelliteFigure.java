@@ -14,6 +14,7 @@ import com.app.orrery.handle.satellite.SatelliteEastHandle;
 import com.app.orrery.handle.satellite.SatelliteNorthHandle;
 import com.app.orrery.handle.satellite.SatelliteSouthHandle;
 import com.app.orrery.handle.satellite.SatelliteWestHandle;
+import com.app.orrery.util.GravityConnection;
 
 import CH.ifa.draw.connector.ChopEllipseConnector;
 import CH.ifa.draw.figure.AttributeFigure;
@@ -21,12 +22,14 @@ import CH.ifa.draw.figure.EllipseFigure;
 import CH.ifa.draw.figure.RectangleFigure;
 import CH.ifa.draw.framework.Connector;
 import CH.ifa.draw.framework.Handle;
+import CH.ifa.draw.handle.ConnectionHandle;
+import CH.ifa.draw.locator.RelativeLocator;
 
 /**
  * @author Edward McNealy <edwardmcn64@gmail.com> - Nov 17, 2015
  *
  */
-public class SatelliteFigure extends AttributeFigure {
+public class SatelliteFigure extends AttributeFigure implements IConnectable {
 	private static final long serialVersionUID = 1L;
 
 	private static final int BODY_SIZE = 20;
@@ -38,6 +41,8 @@ public class SatelliteFigure extends AttributeFigure {
 	private RectangleFigure bottomPanel;
 
 	private boolean selected;
+	private boolean connected = false;
+	private IConnectable connectedObject;
 
 	public SatelliteFigure() {
 		this(new Point(0, 0), new Point(0, 0));
@@ -123,6 +128,14 @@ public class SatelliteFigure extends AttributeFigure {
 
 	@Override
 	public Vector<Handle> handles() {
+		Vector<Handle> handles = createBasicHandles();
+		Vector<Handle> connectionHandles = createConnectionHandles();
+		for (Handle handle : connectionHandles)
+			handles.add(handle);
+		return handles;
+	}
+	
+	private Vector<Handle> createBasicHandles() {
 		Vector<Handle> handles = new Vector<>();
 		ISatelliteHandle north = new SatelliteNorthHandle(this);
 		ISatelliteHandle east = new SatelliteEastHandle(this);
@@ -132,11 +145,22 @@ public class SatelliteFigure extends AttributeFigure {
 		handles.add(east);
 		handles.add(west);
 		handles.add(south);
+		// These are the borders
 		this.handles.add(north);
 		this.handles.add(east);
 		this.handles.add(west);
 		this.handles.add(south);
 		return handles;
+	}
+	
+	private Vector<Handle> createConnectionHandles() {
+		GravityConnection prototype = new GravityConnection();
+		Vector<Handle> handles = new Vector<Handle>();
+        handles.addElement(new ConnectionHandle(this, RelativeLocator.east(), prototype));
+        handles.addElement(new ConnectionHandle(this, RelativeLocator.west(), prototype));
+        handles.addElement(new ConnectionHandle(this, RelativeLocator.south(), prototype));
+        handles.addElement(new ConnectionHandle(this, RelativeLocator.north(), prototype));
+        return handles;
 	}
 
 	@Override
@@ -150,6 +174,22 @@ public class SatelliteFigure extends AttributeFigure {
 	@Override
 	public Connector connectorAt(int x, int y) {
 		return new ChopEllipseConnector(this);
+	}
+
+	@Override
+	public boolean isConnected() {
+		return connected;
+	}
+
+	@Override
+	public void setConnected(boolean connected, IConnectable connectedObject) {
+		this.connected = connected;
+		this.connectedObject = connected ? connectedObject : null;
+	}
+	
+	@Override
+	public IConnectable getConnectedObject() {
+		return connectedObject;
 	}
 
 }

@@ -20,7 +20,7 @@ import CH.ifa.draw.framework.Handle;
  * @author Edward McNealy <edwardmcn64@gmail.com> - Oct 31, 2015
  *
  */
-public class PlanetFigure extends EllipseFigure {
+public class PlanetFigure extends EllipseFigure implements IConnectable {
 	private static final long serialVersionUID = -3146574478769258549L;
 
 	public static final int PLANET_SIZE = 120;
@@ -30,6 +30,8 @@ public class PlanetFigure extends EllipseFigure {
 	// The FontMetrics will be set when the planet name is ready to be drawn
 	private FontMetrics metrics;
 	private Color fColor;
+	private boolean connected = false;
+	private IConnectable connectedObject;
 
 	public PlanetFigure() {
 		super(new Point(0, 0), new Point(0, 0));
@@ -127,6 +129,11 @@ public class PlanetFigure extends EllipseFigure {
 		return handles;
 	}
 
+	@Override
+	public boolean canConnect() {
+		return true;
+	}
+	
 	public void repaint() {
 		invalidate();
 	}
@@ -141,6 +148,22 @@ public class PlanetFigure extends EllipseFigure {
 
 	public void setPlanetName(String planetName) {
 		this.planetName = planetName;
+	}
+
+	@Override
+	public boolean isConnected() {
+		return connected;
+	}
+
+	@Override
+	public void setConnected(boolean connected, IConnectable connectedObject) {
+		this.connected = connected;
+		this.connectedObject = connected ? connectedObject : null;
+	}
+	
+	@Override
+	public IConnectable getConnectedObject() {
+		return connectedObject;
 	}
 
 	@Override
