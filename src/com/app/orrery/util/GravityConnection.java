@@ -2,17 +2,13 @@ package com.app.orrery.util;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.io.IOException;
 
-import com.app.orrery.OrreryApp;
 import com.app.orrery.figure.IConnectable;
 import com.app.orrery.figure.PlanetFigure;
 
 import CH.ifa.draw.figure.ArrowTip;
 import CH.ifa.draw.figure.connection.LineConnection;
 import CH.ifa.draw.framework.Figure;
-import CH.ifa.draw.storable.StorableInput;
-import CH.ifa.draw.storable.StorableOutput;
 import CH.ifa.draw.util.Animatable;
 
 /**
@@ -59,76 +55,52 @@ public class GravityConnection extends LineConnection implements Animatable {
 			((IConnectable) start).setConnected(false, (IConnectable) end);
 	}
 
-	private static int X_VELOCITY = 1;
-	private static int Y_VELOCITY = 1;
-	private static int THETA = 90;
+	private static double THETA = 0.1;
 
 	@Override
 	public void animationStep() {
-		Figure start = startFigure();
-		int xSpeed = X_VELOCITY;
-		int ySpeed = Y_VELOCITY;
-		Rectangle bounds = start.displayBox();
+		try {
+			Figure orbitingFigure = startFigure();
+			Figure planet = endFigure();
 
-		if ((bounds.x + bounds.width > OrreryApp.WIDTH) && (xSpeed > 0))
-			xSpeed = -xSpeed;
-		if ((bounds.y + bounds.height > OrreryApp.HEIGHT) && (ySpeed > 0))
-			ySpeed = -ySpeed;
-		if ((bounds.x < 0) && (xSpeed < 0))
-			xSpeed = -xSpeed;
-		if ((bounds.y < 0) && (ySpeed < 0))
-			ySpeed = -ySpeed;
+			Rectangle planetBounds = null;
+			Rectangle orbitingFigureBounds = null;
 
-		double x = Math.cos(THETA) * bounds.x - Math.sin(THETA) * bounds.y;
-		double y = Math.sin(THETA) * bounds.x + Math.cos(THETA) * bounds.y;
+			if (planet instanceof PlanetFigure && ((PlanetFigure) planet).isConnected()) {
+				PlanetFigure connectedPlanet = (PlanetFigure) ((PlanetFigure) planet).getConnectedObject();
+				Point predictedPlanetPoint = getRotationPoint(planet.displayBox(), connectedPlanet.displayBox());
+				planetBounds = new Rectangle(predictedPlanetPoint.x, predictedPlanetPoint.y, predictedPlanetPoint.x + planet.displayBox().width, predictedPlanetPoint.y + planet.displayBox().height);
+				
+				int newOrbitingFigureX = predictedPlanetPoint.x - orbitingFigure.displayBox().x;
+				int newOrbitingFigureY = predictedPlanetPoint.y - orbitingFigure.displayBox().y;
+//				int newOrbitingFigureX = Math.abs(orbitingFigure.displayBox().x - predictedPlanetPoint.x);
+//				int newOrbitingFigureY = Math.abs(orbitingFigure.displayBox().y - predictedPlanetPoint.y);
+				orbitingFigureBounds = new Rectangle(newOrbitingFigureX, newOrbitingFigureY, newOrbitingFigureX + orbitingFigure.displayBox().width, newOrbitingFigureY + orbitingFigure.displayBox().height);
+			} else {
+				planetBounds = planet.displayBox();
+				orbitingFigureBounds = orbitingFigure.displayBox();
+			}
 
-		xSpeed += x;
-		ySpeed += y;
-		// x += xSpeed;
-		// y += ySpeed;
-
-//		velocity(xSpeed, ySpeed);
-		start.moveBy((int) x, (int) y); 
-//		start.moveBy(xSpeed, ySpeed);
+			Point newPoint = getRotationPoint(orbitingFigureBounds, planetBounds);
+			orbitingFigure.moveBy(newPoint.x, newPoint.y);
+		} catch (NullPointerException e) {
+			// System.out.println("Could not find animatable figure...");
+		}
 	}
 
-	@Override
-	public synchronized void basicDisplayBox(Point origin, Point corner) {
-		super.basicDisplayBox(origin, corner);
-	}
+	private Point getRotationPoint(Rectangle orbitingFigure, Rectangle planet) {
+		double orbitX = orbitingFigure.getCenterX();
+		double orbitY = orbitingFigure.getCenterY();
+		double planetX = planet.getCenterX();
+		double planetY = planet.getCenterY();
 
-	@Override
-	public synchronized void basicMoveBy(int x, int y) {
-		super.basicMoveBy(x, y);
-	}
+		int rotateX = (int) (planetX + (orbitX - planetX) * Math.cos(THETA) - (orbitY - planetY) * Math.sin(THETA));
+		int rotateY = (int) (planetY + (orbitX - planetX) * Math.sin(THETA) + (orbitY - planetY) * Math.cos(THETA));
 
-	@Override
-	public synchronized Rectangle displayBox() {
-		return super.displayBox();
-	}
+		int newOrbitX = (int) (rotateX - orbitX);
+		int newOrbitY = (int) (rotateY - orbitY);
 
-	@Override
-	public void read(StorableInput dr) throws IOException {
-		super.read(dr);
-		X_VELOCITY = dr.readInt();
-		Y_VELOCITY = dr.readInt();
-	}
-
-	public Point velocity() {
-		return new Point(X_VELOCITY, Y_VELOCITY);
-	}
-
-	// -- store / load ----------------------------------------------
-	public void velocity(int xVelocity, int yVelocity) {
-		X_VELOCITY = xVelocity;
-		Y_VELOCITY = yVelocity;
-	}
-
-	@Override
-	public void write(StorableOutput dw) {
-		super.write(dw);
-		dw.writeInt(X_VELOCITY);
-		dw.writeInt(Y_VELOCITY);
+		return new Point(newOrbitX, newOrbitY);
 	}
 
 }

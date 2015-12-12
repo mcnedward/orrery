@@ -32,9 +32,9 @@ import CH.ifa.draw.locator.RelativeLocator;
 public class SatelliteFigure extends AttributeFigure implements IConnectable {
 	private static final long serialVersionUID = 1L;
 
-	private static final int BODY_SIZE = 20;
-	private static final int PANEL_WIDTH = 10;
-	private static final int PANEL_HEIGHT = 30;
+	private static final int BODY_SIZE = 10;
+	private static final int PANEL_WIDTH = 5;
+	private static final int PANEL_HEIGHT = 15;
 
 	private EllipseFigure body;
 	private RectangleFigure topPanel;
